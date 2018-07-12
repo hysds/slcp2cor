@@ -11,15 +11,22 @@ import argparse
 import numpy as np
 import numpy.matlib
 from xml.etree.ElementTree import ElementTree
+from subprocess import check_call
+
 
 import isce
 import isceobj
 from imageMath import IML
 
 
+SCR_PATH = os.path.abspath(os.path.dirname(__file__))
+BIN_PATH = os.path.join(os.path.dirname(SCR_PATH), "src")
+
+
 def runCmd(cmd):
     print("{}".format(cmd))
-    status = os.system(cmd)
+    #status = os.system(cmd)
+    status = check_call(cmd, shell=True)
     if status != 0:
         raise Exception('error when running:\n{}\n'.format(cmd))
 
@@ -119,7 +126,7 @@ def cmdLineParse():
 
 if __name__ == '__main__':
 
-    SCR_DIR="$INSAR_ZERODOP_SCR"
+    SCR_DIR = SCR_PATH
 
     inps = cmdLineParse()
 

@@ -7,15 +7,21 @@ import os
 import sys
 import argparse
 from xml.etree.ElementTree import ElementTree
+from subprocess import check_call
+
 
 import isce
 import isceobj
 
 
+SCR_PATH = os.path.abspath(os.path.dirname(__file__))
+BIN_PATH = os.path.join(os.path.dirname(SCR_PATH), "src")
+
+
 def runCmd(cmd):
-    
     print("{}".format(cmd))
-    status = os.system(cmd)
+    #status = os.system(cmd)
+    status = check_call(cmd, shell=True)
     if status != 0:
         raise Exception('error when running:\n{}\n'.format(cmd))
 
@@ -66,9 +72,9 @@ def ampLooks(inps):
     outLength = int(inLength/inps.alks)
 
     #run it
-    #cmd = 'echo -e "{}\n{}\n{} {}\n{} {}\n" | $INSAR_ZERODOP_BIN/rilooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks)
+    #cmd = 'echo -e "{}\n{}\n{} {}\n{} {}\n" | {}/rilooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks, BIN_PATH)
     #it seems that echo does not require -e in this situation, strange
-    cmd = 'echo "{}\n{}\n{} {}\n{} {}\n" | $INSAR_ZERODOP_BIN/rilooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks)
+    cmd = 'echo "{}\n{}\n{} {}\n{} {}\n" | {}/rilooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks, BIN_PATH)
     runCmd(cmd)
 
     #get xml file for amplitude image
@@ -90,7 +96,7 @@ def intLooks(inps):
     outLength = int(inLength/inps.alks)
 
     #run program here
-    cmd = 'echo "{}\n{}\n{} {}\n{} {}\n" | $INSAR_ZERODOP_BIN/cpxlooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks)
+    cmd = 'echo "{}\n{}\n{} {}\n{} {}\n" | {}/cpxlooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks, BIN_PATH)
     runCmd(cmd)
     
     #get xml file for interferogram
@@ -114,7 +120,7 @@ def mskLooks(inps):
 
     #look_msk infile outfile nrg nrlks nalks
     #run program here
-    cmd = '$INSAR_ZERODOP_BIN/look_msk {} {} {} {} {}'.format(inps.input, inps.output, inWidth, inps.rlks, inps.alks)
+    cmd = '{}/look_msk {} {} {} {} {}'.format(BIN_PATH, inps.input, inps.output, inWidth, inps.rlks, inps.alks)
     runCmd(cmd)
     
     #get xml file for interferogram
@@ -141,7 +147,7 @@ def hgtLooks(inps):
 
     #look_msk infile outfile nrg nrlks nalks
     #run program here
-    cmd = '$INSAR_ZERODOP_BIN/look_double {} {} {} {} {}'.format(inps.input, inps.output, inWidth, inps.rlks, inps.alks)
+    cmd = '{}/look_double {} {} {} {} {}'.format(BIN_PATH, inps.input, inps.output, inWidth, inps.rlks, inps.alks)
     runCmd(cmd)
     
 

@@ -7,6 +7,8 @@ import shutil
 import pickle
 import argparse
 import xml.etree.ElementTree as ET
+from subprocess import check_call
+
 
 import isce
 import isceobj
@@ -14,11 +16,14 @@ from isceobj.Image import createImage
 
 #from crlpac import runCmd
 
+
 def runCmd(cmd):
     print("{}".format(cmd))
-    status = os.system(cmd)
+    #status = os.system(cmd)
+    status = check_call(cmd, shell=True)
     if status != 0:
         raise Exception('error when running:\n{}\n'.format(cmd))
+
 
 def cmdLineParse():
     '''
