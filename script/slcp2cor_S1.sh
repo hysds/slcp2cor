@@ -1,17 +1,18 @@
-dir=/u/hm/NCal_Fire/proc/S1-SLCP_RM_M1S3_TN035_20170928T020704-20171022T020756_s2-resorb-ab71-v1.1.3-urgent_response
+#!/bin/bash
+BASE_PATH=$(dirname "${BASH_SOURCE}")
+BASE_PATH=$(cd "${BASE_PATH}"; pwd)
 
-i=2   # subswath (1, 2, or 3)
+# inputs
+slcp_dir=$(readlink -f $1)
+swath=$2
+dirm=${slcp_dir}/master/IW${swath}
+dirf=${slcp_dir}/fine_coreg/IW${swath}
+dirg=${slcp_dir}/geom_master/IW${swath}
 
-dirm=${dir}/master/IW${i}        # master directory
-dirg=${dir}/geom_master/IW${i}   # master geometry directory
-dirs=${dir}/fine_coreg/IW${i}    # slave directory
+work_dir=$(pwd)
 
-mkdir s${i}
-cd s${i}
+mkdir s${swath}
+cd s${swath}
 
-mkdir cor_20170928_20171022
-cd cor_20170928_20171022
-slcp2cor.py -mdir ${dirm} -sdir ${dirs} -gdir ${dirg} -rlks 7 -alks 3 -ssize 1.0
-cd ..
-cd ..
-
+$BASE_PATH/slcp2cor.py -mdir ${dirm} -sdir ${dirs} -gdir ${dirg} -rlks 7 -alks 3 -ssize 1.0
+cd $work_dir
