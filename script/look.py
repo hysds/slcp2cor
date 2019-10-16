@@ -11,7 +11,6 @@ import argparse
 from xml.etree.ElementTree import ElementTree
 from subprocess import check_call
 
-
 import isce
 import isceobj
 
@@ -22,10 +21,11 @@ BIN_PATH = os.path.join(os.path.dirname(SCR_PATH), "src")
 
 def runCmd(cmd):
     print("{}".format(cmd))
-    #status = os.system(cmd)
+    # status = os.system(cmd)
     status = check_call(cmd, shell=True)
     if status != 0:
         raise Exception('error when running:\n{}\n'.format(cmd))
+
 
 def getWidth(xmlfile):
     xmlfp = None
@@ -46,6 +46,7 @@ def getWidth(xmlfile):
             xmlfp.close()
     return width
 
+
 def getLength(xmlfile):
     xmlfp = None
     try:
@@ -65,39 +66,38 @@ def getLength(xmlfile):
             xmlfp.close()
     return length
 
+
 def ampLooks(inps):
-
-
     inWidth = getWidth(inps.input + '.xml')
     inLength = getLength(inps.input + '.xml')
-    outWidth = int(old_div(inWidth,inps.rlks))
-    outLength = int(old_div(inLength,inps.alks))
+    outWidth = int(old_div(inWidth, inps.rlks))
+    outLength = int(old_div(inLength, inps.alks))
 
-    #run it
-    #cmd = 'echo -e "{}\n{}\n{} {}\n{} {}\n" | {}/rilooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks, BIN_PATH)
-    #it seems that echo does not require -e in this situation, strange
+    # run it
+    # cmd = 'echo -e "{}\n{}\n{} {}\n{} {}\n" | {}/rilooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks, BIN_PATH)
+    # it seems that echo does not require -e in this situation, strange
     cmd = 'echo "{}\n{}\n{} {}\n{} {}\n" | {}/rilooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks, BIN_PATH)
     runCmd(cmd)
 
-    #get xml file for amplitude image
+    # get xml file for amplitude image
     ampImage = isceobj.createAmpImage()
     ampImage.setFilename(inps.output)
     ampImage.setWidth(outWidth)
     ampImage.setLength(outLength)
     ampImage.setAccessMode('read')
-    #ampImage.createImage()
+    # ampImage.createImage()
     ampImage.renderVRT()
     ampImage.renderHdr()
-    #ampImage.finalizeImage()
+    # ampImage.finalizeImage()
+
 
 def intLooks(inps):
-
     inWidth = getWidth(inps.input + '.xml')
     inLength = getLength(inps.input + '.xml')
-    outWidth = int(old_div(inWidth,inps.rlks))
-    outLength = int(old_div(inLength,inps.alks))
+    outWidth = int(old_div(inWidth, inps.rlks))
+    outLength = int(old_div(inLength, inps.alks))
 
-    #run program here
+    # run program here
     cmd = 'echo "{}\n{}\n{} {}\n{} {}\n" | {}/cpxlooks'.format(inps.input, inps.output, inWidth, inLength, inps.rlks, inps.alks, BIN_PATH)
     runCmd(cmd)
     
@@ -107,25 +107,24 @@ def intLooks(inps):
     intImage.setWidth(outWidth)
     intImage.setLength(outLength)
     intImage.setAccessMode('read')
-    #intImage.createImage()
+    # intImage.createImage()
     intImage.renderVRT()
     intImage.renderHdr()
-    #intImage.finalizeImage()
+    # intImage.finalizeImage()
 
 
 def mskLooks(inps):
-
     inWidth = getWidth(inps.input + '.xml')
     inLength = getLength(inps.input + '.xml')
-    outWidth = int(old_div(inWidth,inps.rlks))
-    outLength = int(old_div(inLength,inps.alks))
+    outWidth = int(old_div(inWidth, inps.rlks))
+    outLength = int(old_div(inLength, inps.alks))
 
-    #look_msk infile outfile nrg nrlks nalks
-    #run program here
+    # look_msk infile outfile nrg nrlks nalks
+    # run program here
     cmd = '{}/look_msk {} {} {} {} {}'.format(BIN_PATH, inps.input, inps.output, inWidth, inps.rlks, inps.alks)
     runCmd(cmd)
     
-    #get xml file for interferogram
+    # get xml file for interferogram
     image = isceobj.createImage()
     accessMode = 'read'
     dataType = 'BYTE'
@@ -137,35 +136,32 @@ def mskLooks(inps):
     image.addDescription(descr)
     image.renderVRT()
     image.renderHdr()
-    #image.finalizeImage()
+    # image.finalizeImage()
 
 
 def hgtLooks(inps):
-
     inWidth = getWidth(inps.input + '.xml')
     inLength = getLength(inps.input + '.xml')
-    outWidth = int(old_div(inWidth,inps.rlks))
-    outLength = int(old_div(inLength,inps.alks))
+    outWidth = int(old_div(inWidth, inps.rlks))
+    outLength = int(old_div(inLength, inps.alks))
 
-    #look_msk infile outfile nrg nrlks nalks
-    #run program here
+    # look_msk infile outfile nrg nrlks nalks
+    # run program here
     cmd = '{}/look_double {} {} {} {} {}'.format(BIN_PATH, inps.input, inps.output, inWidth, inps.rlks, inps.alks)
     runCmd(cmd)
-    
 
-    #get xml
+    # get xml
     image = isceobj.createImage()
     accessMode = 'read'
     dataType = 'DOUBLE'
     width = outWidth
-    image.initImage(inps.output,accessMode,width,dataType)
+    image.initImage(inps.output, accessMode, width, dataType)
 
     image.addDescription('Pixel-by-pixel height in meters.')
     image.renderVRT()
     image.renderHdr()
-    #image.finalizeImage()
-    #image.createImage()
-
+    # image.finalizeImage()
+    # image.createImage()
 
 
 def cmdLineParse():
@@ -173,18 +169,14 @@ def cmdLineParse():
     Command line parser.
     '''
     parser = argparse.ArgumentParser( description='take looks')
-    parser.add_argument('-i', '--input', dest='input', type=str, required=True,
-            help = 'input file')
-    parser.add_argument('-o', '--output', dest='output', type=str, required=True,
-            help = 'output file')
-    parser.add_argument('-r','--rlks', dest='rlks', type=int, default=4,
-            help = 'number of range looks')
-    parser.add_argument('-a','--alks', dest='alks', type=int, default=4,
-            help = 'number of azimuth looks')
+    parser.add_argument('-i', '--input', dest='input', type=str, required=True, help='input file')
+    parser.add_argument('-o', '--output', dest='output', type=str, required=True, help='output file')
+    parser.add_argument('-r', '--rlks', dest='rlks', type=int, default=4, help='number of range looks')
+    parser.add_argument('-a', '--alks', dest='alks', type=int, default=4, help='number of azimuth looks')
     return parser.parse_args()
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     inps = cmdLineParse()
 
     if inps.input.endswith('.amp'):
@@ -199,9 +191,6 @@ if __name__ == '__main__':
         raise Exception('file type not supported yet')
         #sys.exit()
 
-#look.py -i diff_20130927-20141211.int -o diff_20130927-20141211_16rlks_16alks.int -r 16 -a 16
-#look.py -i 20130927-20141211.amp -o 20130927-20141211_16rlks_16alks.amp -r 16 -a 16    
-#look.py -i msk.msk -o 3_6.msk -r 3 -a 6
-
-
-
+# look.py -i diff_20130927-20141211.int -o diff_20130927-20141211_16rlks_16alks.int -r 16 -a 16
+# look.py -i 20130927-20141211.amp -o 20130927-20141211_16rlks_16alks.amp -r 16 -a 16
+# look.py -i msk.msk -o 3_6.msk -r 3 -a 6
