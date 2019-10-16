@@ -1,4 +1,5 @@
 #!/usr/bin/env python3 
+from builtins import str
 import os, sys, re, json, shutil, traceback, logging
 from subprocess import check_call
 from datetime import datetime
@@ -66,8 +67,8 @@ def call_noerr(cmd):
 
     try: check_call(cmd, shell=True)
     except Exception as e:
-        logger.warn("Got exception running {}: {}".format(cmd, str(e)))
-        logger.warn("Traceback: {}".format(traceback.format_exc()))
+        logger.error("Got exception running {}: {}".format(cmd, str(e)))
+        logger.error("Traceback: {}".format(traceback.format_exc()))
 
 
 def main(slcp_dir):
@@ -85,7 +86,7 @@ def main(slcp_dir):
     # get dataset version, set dataset ID and met/dataset JSON files
     match = SLCP_RE.search(slcp_id)
     if not match:
-        raise(RuntimeError("Failed to recognize SLCP id: {}".format(slcp_id)))
+        raise RuntimeError("Failed to recognize SLCP id: {}".format(slcp_id))
     id_base = "S1-COR_{}".format(match.group(1))
     swath = match.group(2)
     slcp_version = match.group(3)
@@ -110,8 +111,10 @@ def main(slcp_dir):
 
         # cleanup SLCP dir
         logger.info("Removing {}.".format(slcp_dir))
-        try: shutil.rmtree(slcp_dir)
-        except: pass
+        try:
+            shutil.rmtree(slcp_dir)
+        except:
+            pass
         return 0
 
     # generate coherence
@@ -131,16 +134,19 @@ def main(slcp_dir):
     create_dataset_json(id, version, slcp_ds_file, ds_file)
     
     # clean out SLCP prod
-    try: shutil.rmtree(slcp_dir)
-    except: pass
+    try:
+        shutil.rmtree(slcp_dir)
+    except:
+        pass
 
 
 if __name__ == '__main__':
-    try: status = main(sys.argv[1])
+    try:
+        status = main(sys.argv[1])
     except Exception as e:
         with open('_alt_error.txt', 'w') as f:
             f.write("%s\n" % str(e))
         with open('_alt_traceback.txt', 'w') as f:
             f.write("%s\n" % traceback.format_exc())
-        raise
+        raise e
     sys.exit(status)
