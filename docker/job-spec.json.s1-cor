@@ -3,8 +3,8 @@
   "imported_worker_files": {
     "$HOME/.netrc": "/home/ops/.netrc",
     "$HOME/.aws": "/home/ops/.aws",
-    "$HOME/verdi/etc/settings.conf": "/home/ops/verdi/ops/slcp2cor/conf/settings.conf"
-
+    "$HOME/verdi/etc/settings.conf": "/home/ops/verdi/ops/slcp2cor/conf/settings.conf",
+    "$HOME/verdi/etc/settings.conf": "/home/ops/ariamh/conf/settings.conf
   },
   "recommended-queues" : [
     "urgent-response-job_worker-large"
