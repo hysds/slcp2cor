@@ -1,4 +1,4 @@
-FROM hysds/container-aria-jpl_ariamh:python3
+FROM container-aria-jpl_ariamh:python3
 
 LABEL description="PGE container for geocoded coherence and amplitude"
 
