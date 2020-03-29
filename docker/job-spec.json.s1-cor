@@ -1,0 +1,34 @@
+{
+  "command":"/home/ops/verdi/ops/slcp2cor/script/create_cor.sh",
+  "imported_worker_files": {
+    "$HOME/.netrc": "/home/ops/.netrc",
+    "$HOME/.aws": "/home/ops/.aws",
+    "$HOME/verdi/etc/settings.conf": "/home/ops/verdi/ops/slcp2cor/conf/settings.conf",
+    "$HOME/verdi/etc/settings.conf": "/home/ops/ariamh/conf/settings.conf"
+    
+  },
+  "recommended-queues" : [
+    "urgent-response-job_worker-large"
+  ],
+  "disk_usage":"100GB",
+  "soft_time_limit": 3300,
+  "time_limit": 3600,
+  "params" : [
+    { 
+      "name": "localize_url",
+      "destination": "localize"
+    },
+    {
+      "name": "path",
+      "destination": "positional"
+    },
+    {
+      "name": "cor_range_looks",
+      "destination": "context"
+    },
+    {
+      "name": "cor_azimuth_looks",
+      "destination": "context"
+    }
+  ]
+}

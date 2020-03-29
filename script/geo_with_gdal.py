@@ -168,7 +168,7 @@ if __name__ == '__main__':
             'LINE_OFFSET' : "0",
             'LINE_STEP' : "1",
             'PIXEL_STEP' : "1"}
-    for key, val in rdict.items():
+    for key, val in list(rdict.items()):
         data = ET.SubElement(meta, 'mdi')
         data.text = val
         data.attrib['key'] = key
